@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Master Clock Suit</title>
+  </head>
+  <body
+    style="
+      background-image: url(image.png);
+      background-repeat: no-repeat;
+      background-size: cover;
+      display:inline-flex;
+    "
+  >
+    
+  <div class="title">
+      
+      <h1 style="font-size: 70px;margin:80px ;color: rgb(83, 83, 83)">
+        🎯G K
+        <span style="font-size: 80px; color: rgb(246, 246, 246)">R</span> !!
+      </h1>
+      <h1 style="font-size: 70px;margin:80px ;color: rgb(83, 83, 83)">
+        ⌛Its Your
+        <span style="font-size: 80px; color: rgb(246, 246, 246)">Time</span> !!
+      </h1>
+    </div>
+    <div id="myNav" class="overlay">
+      <a class="closebtn" onclick="closeNav()">&times;</a>
+      <div class="overlay-content">
+        <!-- <a href="#">About</a> -->
+        <a href="clock.html">Clock ⌚</a>
+        <a href="calender.html">Calender 🗓️</a>
+        <a href="Stop_watch.html">Stop-Watch ⏱️</a>
+        <a href="Alarm.html">Alarm ⏰</a>
+      </div>
+    </div>
+    <span style="font-size: 100px;color:rgb(167, 164, 0) ;cursor: pointer" onclick="openNav()"
+      >&#9776; </span>
+
+    <script>
+      function openNav() {
+        document.getElementById("myNav").style.height = "100%";
+      }
+
+      function closeNav() {
+        document.getElementById("myNav").style.height = "0%";
+      }
+    </script>
+  </body>
+</html>

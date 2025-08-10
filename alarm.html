@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Alarm Clock</title>
+    <style>
+        /* Add shaking effect */
+        .shake {
+            animation: shake 0.5s;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        /* STOP button */
+        #stop-alarm {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: red;
+            color: white;
+            font-size: 20px;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <form class="back">
+        <input type="button" value="&#8678;" onclick="history.back()">
+    </form>
+    <div class="wrapper">
+        <img src="alarm.png" alt="clock">
+        <h1 id="current-time">04:20:30 PM</h1>
+        <div class="content1">
+            <div class="column">
+                <select id="hour-select">
+                    <option value="Hour" selected hidden>Hour</option>
+                </select>
+            </div>
+            <div class="column">
+                <select id="minute-select">
+                    <option value="Minute" selected hidden>Minute</option>
+                </select>
+            </div>
+            <div class="column">
+                <select id="ampm-select">
+                    <option value="AM/PM" selected hidden>AM/PM</option>
+                </select>
+            </div>
+        </div>
+        <button id="set-alarm">Set Alarm</button>
+        <button id="stop-alarm">STOP</button>
+    </div>
+
+    <script>
+        const hourSelect = document.getElementById('hour-select');
+        const minuteSelect = document.getElementById('minute-select');
+        const ampmSelect = document.getElementById('ampm-select');
+        const currentTimeDisplay = document.getElementById('current-time');
+        const alarmSound = new Audio("audio.mp3"); // Example sound file
+        const stopAlarmBtn = document.getElementById('stop-alarm');
+        const wrapper = document.querySelector('.wrapper');
+
+        let alarmTime = null;
+        let isAlarmSet = false;
+
+        // Populate hours (1 to 12)
+        for (let i = 1; i <= 12; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.text = i < 10 ? '0' + i : i;
+            hourSelect.appendChild(option);
+        }
+
+        // Populate minutes (0 to 59)
+        for (let i = 0; i < 60; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.text = i < 10 ? '0' + i : i;
+            minuteSelect.appendChild(option);
+        }
+
+        // Populate AM/PM
+        ['AM', 'PM'].forEach(period => {
+            const option = document.createElement('option');
+            option.value = period;
+            option.text = period;
+            ampmSelect.appendChild(option);
+        });
+
+        // Function to get current time
+        function getCurrentTime() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+
+            hours = hours % 12;
+            hours = hours ? hours : 12; // If 0, set to 12
+
+            const timeString = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds} ${ampm}`;
+            currentTimeDisplay.textContent = timeString;
+
+            return { hours, minutes, ampm };
+        }
+
+        // Function to set alarm
+        document.getElementById('set-alarm').addEventListener('click', () => {
+            const selectedHour = hourSelect.value;
+            const selectedMinute = minuteSelect.value;
+            const selectedAmPm = ampmSelect.value;
+
+            if (selectedHour === "Hour" || selectedMinute === "Minute" || selectedAmPm === "AM/PM") {
+                alert("Please select a valid time for the alarm.");
+                return;
+            }
+
+            alarmTime = `${selectedHour}:${selectedMinute} ${selectedAmPm}`;
+            isAlarmSet = true;
+            console.log(`Alarm set for ${alarmTime}`);
+            alert(`Alarm set for ${alarmTime}`);
+        });
+
+        // Check if it's time for the alarm
+        function checkAlarm() {
+            const { hours, minutes, ampm } = getCurrentTime();
+            const currentTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes} ${ampm}`;
+
+            if (isAlarmSet && currentTime === alarmTime) {
+                alarmSound.play();
+                wrapper.classList.add('shake');  // Add shake class
+                stopAlarmBtn.style.display = 'block';  // Show STOP button
+                isAlarmSet = false; // Reset alarm after it goes off
+            }
+        }
+
+        // Stop the alarm and reset everything
+        stopAlarmBtn.addEventListener('click', () => {
+            alarmSound.pause(); // Stop sound
+            alarmSound.currentTime = 0; // Reset sound to the start
+            stopAlarmBtn.style.display = 'none'; // Hide STOP button
+            wrapper.classList.remove('shake'); // Stop shaking
+        });
+
+        // Update the time every second and check for alarm
+        setInterval(() => {
+            getCurrentTime();
+            checkAlarm();
+        }, 1000);
+    </script>
+</body>
+</html>
